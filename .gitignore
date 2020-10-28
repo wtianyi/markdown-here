@@ -4,6 +4,9 @@ Thumbs.db
 
 *.sublime-project
 *.sublime-workspace
+*.swp
+*.swo
+package*
 
 # Build directory
 dist

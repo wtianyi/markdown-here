@@ -20,20 +20,72 @@
 
 var MarkdownRender = {};
 
+// Taken from https://github.com/markedjs/marked/issues/1538#issuecomment-575838181
+function prepareMarkedRenderKatex(userprefs, marked) {
+  var renderer = new marked.Renderer({ headerIds: userprefs['header-anchors-enabled'] });
+
+  let i = 0
+  const next_id = () => `__special_katext_id_${i++}__`
+  renderer.math_expressions = {}
+
+  function replace_math_with_ids(text) {
+    // Qllowing newlines inside of `$$...$$`
+    text = text.replace(/\$\$([\s\S]+?)\$\$/g, (_match, expression) => {
+      const id = next_id()
+      renderer.math_expressions[id] = { type: 'block', expression }
+      return id
+    })
+
+    // Not allowing newlines or space inside of `$...$`
+    text = text.replace(/\$([^\n\s]+?)\$/g, (_match, expression) => {
+      const id = next_id()
+      renderer.math_expressions[id] = { type: 'inline', expression }
+      return id
+    })
+
+    return text
+  }
+
+  const original_listitem = renderer.listitem
+  renderer.listitem = function(text, task, checked) {
+    return original_listitem(replace_math_with_ids(text), task, checked)
+  }
+
+  const original_paragraph = renderer.paragraph
+  renderer.paragraph = function(text) {
+    return original_paragraph(replace_math_with_ids(text))
+  }
+
+  const original_tablecell = renderer.tablecell
+  renderer.tablecell = function(content, flags) {
+    return original_tablecell(replace_math_with_ids(content), flags)
+  }
+
+  // Inline level, maybe unneded
+  const original_text = renderer.text
+  renderer.text = function(text) {
+    return original_text(replace_math_with_ids(text))
+  }
+  return renderer;
+}
 
 /**
  Using the functionality provided by the functions htmlToText and markdownToHtml,
  render html into pretty text.
  */
 function markdownRender(mdText, userprefs, marked, hljs) {
-  function mathify(mathcode) {
-    return userprefs['math-value']
-            .replace(/\{mathcode\}/ig, mathcode)
-            .replace(/\{urlmathcode\}/ig, encodeURIComponent(mathcode));
-  }
+  // function mathify(mathcode) {
+  //   return userprefs['math-value']
+  //           .replace(/\{mathcode\}/ig, mathcode)
+  //           .replace(/\{urlmathcode\}/ig, encodeURIComponent(mathcode));
+  // }
 
   // Hook into some of Marked's renderer customizations
-  var markedRenderer = new marked.Renderer();
+  if (userprefs['math-enabled']) {
+    var markedRenderer = prepareMarkedRenderKatex(userprefs, marked);
+  } else {
+    var markedRenderer = new marked.Renderer({ headerIds: userprefs['header-anchors-enabled'] });
+  }
 
   var sanitizeLinkForAnchor = function(text) {
     return text.toLowerCase().replace(/[^\w]+/g, '-');
@@ -84,7 +136,7 @@ function markdownRender(mdText, userprefs, marked, hljs) {
     // Bit of a hack: highlight.js uses a `hljs` class to style the code block,
     // so we'll add it by sneaking it into this config field.
     langPrefix: 'hljs language-',
-    math: userprefs['math-enabled'] ? mathify : null,
+    // math: userprefs['math-enabled'] ? mathify : null,
     highlight: function(codeText, codeLanguage) {
         if (codeLanguage &&
             hljs.getLanguage(codeLanguage.toLowerCase())) {
@@ -96,6 +148,14 @@ function markdownRender(mdText, userprefs, marked, hljs) {
     };
 
   var renderedMarkdown = marked(mdText, markedOptions);
+
+  // post-processing w/ Katex
+  if (userprefs['math-enabled']) {
+    renderedMarkdown = renderedMarkdown.replace(/(__special_katext_id_\d+__)/g, (_match, capture) => {
+      const { type, expression } = markedRenderer.math_expressions[capture]
+      return katex.renderToString(expression, { displayMode: type == 'block', output: "html" })
+    })
+  }
 
   return renderedMarkdown;
 }

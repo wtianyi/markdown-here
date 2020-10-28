@@ -38,6 +38,8 @@ scriptLoader.loadSubScript('resource://markdown_here_common/markdown-render.js')
 imports.MarkdownRender = window.MarkdownRender;
 scriptLoader.loadSubScript('resource://markdown_here_common/options-store.js');
 imports.OptionsStore = window.OptionsStore;
+scriptLoader.loadSubScript('resource://markdown_here_common/katex/katex.min.js');
+imports.katex = window.katex;
 
 
 /*
@@ -81,7 +83,7 @@ document.addEventListener(imports.Utils.PRIVILEGED_REQUEST_EVENT_NAME, function(
           prefs,
           imports.marked,
           imports.hljs),
-        css: (prefs['main-css'] + prefs['syntax-css'])
+        css: prefs["math-enabled"] ? (prefs['main-css'] + prefs['syntax-css'] + prefs['math-css']) : (prefs['main-css'] + prefs['syntax-css'])
       });
     });
     asyncResponseCallback = true;

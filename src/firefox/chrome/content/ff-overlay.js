@@ -121,6 +121,8 @@ var markdown_here = {
     markdown_here.imports.OptionsStore = OptionsStore;
     markdown_here.scriptLoader.loadSubScript('resource://markdown_here_common/highlightjs/highlight.js');
     markdown_here.imports.hljs = window.hljs;
+    markdown_here.scriptLoader.loadSubScript('resource://markdown_here_common/katex/katex.min.js');
+    markdown_here.imports.katex = window.katex;
 
     // initialization code
     this.initialized = true;
@@ -281,7 +283,7 @@ var markdown_here = {
         markdown_here.imports.hljs);
       renderedMarkdown = mdhHtmlToText.postprocess(renderedMarkdown);
 
-      callback(renderedMarkdown, prefs['main-css'] + prefs['syntax-css']);
+      callback(renderedMarkdown, prefs["math-enabled"] ? (prefs['main-css'] + prefs['syntax-css'] + prefs['math-css']) : (prefs['main-css'] + prefs['syntax-css']));
     });
   },
 

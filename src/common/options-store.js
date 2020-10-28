@@ -18,10 +18,11 @@ if (typeof(Utils) === 'undefined' && typeof(Components) !== 'undefined') {
 // Common defaults
 var DEFAULTS = {
   'math-enabled': true,
-  'math-value': '<img src="https://chart.googleapis.com/chart?cht=tx&chl={urlmathcode}" alt="{mathcode}">',
+  //'math-value': '<img src="https://chart.googleapis.com/chart?cht=tx&chl={urlmathcode}" alt="{mathcode}">',
+  'math-value': '<img class="math-eq" src="https://latex.codecogs.com/png.latex?\\dpi{400}{urlmathcode}" alt="{mathcode}">',
   'hotkey': { shiftKey: false, ctrlKey: true, altKey: true, key: 'M' },
   'forgot-to-render-check-enabled': false,
-  'header-anchors-enabled': false,
+  'header-anchors-enabled': true, //false,
   'gfm-line-breaks-enabled': true
 };
 
@@ -123,6 +124,7 @@ var ChromeOptionsStore = {
   // The default values or URLs for our various options.
   defaults: {
     'main-css': {'__defaultFromFile__': '/common/default.css', '__mimeType__': 'text/css'},
+    'math-css': {'__defaultFromFile__': '/common/katex/katex.min.css', '__mimeType__': 'text/css'},
     'syntax-css': {'__defaultFromFile__': '/common/highlightjs/styles/github.css', '__mimeType__': 'text/css'},
     'math-enabled': DEFAULTS['math-enabled'],
     'math-value': DEFAULTS['math-value'],
@@ -287,6 +289,7 @@ var MozillaOptionsStore = {
   defaults: {
     'local-first-run': true,
     'main-css': {'__defaultFromFile__': 'resource://markdown_here_common/default.css', '__mimeType__': 'text/css'},
+    'math-css': {'__defaultFromFile__': 'resource://markdown_here_common/katex/katex.min.css', '__mimeType__': 'text/css'},
     'syntax-css': {'__defaultFromFile__': 'resource://markdown_here_common/highlightjs/styles/github.css', '__mimeType__': 'text/css'},
     'math-enabled': DEFAULTS['math-enabled'],
     'math-value': DEFAULTS['math-value'],
@@ -462,6 +465,7 @@ var SafariOptionsStore = {
   // The default values or URLs for our various options.
   defaults: {
     'main-css': {'__defaultFromFile__': (typeof(safari) !== 'undefined' ? safari.extension.baseURI : '')+'markdown-here/src/common/default.css', '__mimeType__': 'text/css'},
+    'math-css': {'__defaultFromFile__': (typeof(safari) !== 'undefined' ? safari.extension.baseURI : '')+'markdown-here/src/common/katex/katex.min.css', '__mimeType__': 'text/css'},
     'syntax-css': {'__defaultFromFile__': (typeof(safari) !== 'undefined' ? safari.extension.baseURI : '')+'markdown-here/src/common/highlightjs/styles/github.css', '__mimeType__': 'text/css'},
     'math-enabled': DEFAULTS['math-enabled'],
     'math-value': DEFAULTS['math-value'],

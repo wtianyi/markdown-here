@@ -200,3 +200,8 @@ table tr th {
  font-weight: bold;
   background-color: #F0F0F0;
 }
+
+img.math-eq {
+  max-height: 1.2em;
+  vertical-align: -20%;
+}

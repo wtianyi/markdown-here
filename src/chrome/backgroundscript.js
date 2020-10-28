@@ -78,7 +78,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, responseCallback)
           prefs,
           marked,
           hljs),
-        css: (prefs['main-css'] + prefs['syntax-css'])
+        //css: (prefs['main-css'] + prefs['syntax-css'])
+        css: prefs["math-enabled"] ? (prefs['main-css'] + prefs['syntax-css'] + prefs['math-css']) : (prefs['main-css'] + prefs['syntax-css'])
       });
     });
     return true;
