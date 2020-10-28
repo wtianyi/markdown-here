@@ -176,6 +176,14 @@ See the [Compatibility wiki page](https://github.com/adam-p/markdown-here/wiki/C
 
 * For more tweaky features, visit the [Tips and Tricks](https://github.com/adam-p/markdown-here/wiki/Tips-and-Tricks) section.
 
+* For the use in Zotero notes: Zotero uses TinyMCE editor for its notes, which by default automatically removes empty HTML tags (especially, `<span>`). This causes misformatting of the HTML-only math equations rendered by KaTeX.
+  * A hacky solution is to locate the `zotero.jar` file in Zotero's installation path, unzip it, and modify (**BACKUP FIRST!**)
+    1. `resource/tinymce/note.html`: add `extended_valid_elements: 'span[*]',` to the `tinymce.init()` part; and
+    2. `resource/tinymce/noteview.html`: add `extended_valid_elements: 'span[*]',` to the `tinyMCE.init()` part
+    Then rezip the `zotero.jar` file.
+  * See https://forums.zotero.org/discussion/8784/howto-enable-additional-tinymce-note-editor-functionality and https://stackoverflow.com/a/35524890/14498799
+    
+
 ## Building the Extension Bundles
 
 ```
@@ -194,7 +202,7 @@ common/
 chrome/
 ```
 
-### Firefox/Thunderbird extension
+### Firefox/Thunderbird/Zotero extension
 
 Create a file with a `.xpi` extension containing these files and directories:
 
@@ -203,6 +211,12 @@ chrome.manifest
 install.rdf
 common/
 firefox/
+```
+
+For example:
+```
+cd markdown-here/src
+zip -r MDH.xpi chrome.manifest install.rdf common firefox
 ```
 
 ### Safari extension
