@@ -28,18 +28,39 @@ function prepareMarkedRenderKatex(userprefs, marked) {
   const next_id = () => `__special_katext_id_${i++}__`
   renderer.math_expressions = {}
 
+  var decodeEntities = (function() {
+    // taken from https://stackoverflow.com/a/9609450/14498799
+    // this prevents any overhead from creating the object each time
+    var element = document.createElement('div');
+
+    function decodeHTMLEntities (str) {
+      if(str && typeof str === 'string') {
+        // strip script/html tags
+        str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+        str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+        element.innerHTML = str;
+        str = element.textContent;
+        element.textContent = '';
+      }
+      return str;
+    }
+    return decodeHTMLEntities;
+  })();
+
   function replace_math_with_ids(text) {
     // Qllowing newlines inside of `$$...$$`
     text = text.replace(/\$\$([\s\S]+?)\$\$/g, (_match, expression) => {
       const id = next_id()
-      renderer.math_expressions[id] = { type: 'block', expression }
+      const decoded_expression = decodeEntities(expression)
+      renderer.math_expressions[id] = { type: 'block', expression: decoded_expression }
       return id
     })
 
     // Not allowing newlines or space inside of `$...$`
     text = text.replace(/\$([^\n\s]+?)\$/g, (_match, expression) => {
       const id = next_id()
-      renderer.math_expressions[id] = { type: 'inline', expression }
+      const decoded_expression = decodeEntities(expression)
+      renderer.math_expressions[id] = { type: 'inline', expression: decoded_expression }
       return id
     })
 
