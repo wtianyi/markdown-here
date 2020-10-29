@@ -182,6 +182,7 @@ See the [Compatibility wiki page](https://github.com/adam-p/markdown-here/wiki/C
     2. `resource/tinymce/noteview.html`: add `extended_valid_elements: 'span[*]',` to the `tinyMCE.init()` part
     Then rezip the `zotero.jar` file.
   * See https://forums.zotero.org/discussion/8784/howto-enable-additional-tinymce-note-editor-functionality and https://stackoverflow.com/a/35524890/14498799
+  * See https://gist.github.com/wtianyi/0240f3893843cf5cbe3e7424422a1850 for more customization of Zotero notes for better experience with Markdown Here.
     
 
 ## Building the Extension Bundles

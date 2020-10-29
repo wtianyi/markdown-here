@@ -95,12 +95,6 @@ function prepareMarkedRenderKatex(userprefs, marked) {
  render html into pretty text.
  */
 function markdownRender(mdText, userprefs, marked, hljs) {
-  // function mathify(mathcode) {
-  //   return userprefs['math-value']
-  //           .replace(/\{mathcode\}/ig, mathcode)
-  //           .replace(/\{urlmathcode\}/ig, encodeURIComponent(mathcode));
-  // }
-
   // Hook into some of Marked's renderer customizations
   if (userprefs['math-enabled']) {
     var markedRenderer = prepareMarkedRenderKatex(userprefs, marked);
@@ -157,7 +151,6 @@ function markdownRender(mdText, userprefs, marked, hljs) {
     // Bit of a hack: highlight.js uses a `hljs` class to style the code block,
     // so we'll add it by sneaking it into this config field.
     langPrefix: 'hljs language-',
-    // math: userprefs['math-enabled'] ? mathify : null,
     highlight: function(codeText, codeLanguage) {
         if (codeLanguage &&
             hljs.getLanguage(codeLanguage.toLowerCase())) {
