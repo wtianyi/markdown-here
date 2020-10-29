@@ -6,6 +6,8 @@ Thumbs.db
 *.sublime-workspace
 *.swp
 *.swo
+*.bak
+.log
 package*
 
 # Build directory
