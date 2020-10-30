@@ -165,9 +165,16 @@ function markdownRender(mdText, userprefs, marked, hljs) {
 
   // post-processing w/ Katex
   if (userprefs['math-enabled']) {
+    let macros = {}
     renderedMarkdown = renderedMarkdown.replace(/(__special_katext_id_\d+__)/g, (_match, capture) => {
       const { type, expression } = markedRenderer.math_expressions[capture]
-      return katex.renderToString(expression, { displayMode: type == 'block', output: "html" })
+      return katex.renderToString(
+        expression, {
+          displayMode: type == 'block',
+          output: "html",
+          macros: macros,
+          globalGroup: true // to allow macros across equations
+        })
     })
   }
 
